@@ -50,6 +50,7 @@ class CarkeekBlocksCL_Block_Register {
 		$this->slug = 'carkeek-blocks';
 
 		add_action( 'init', array( $this, 'create_block_carkeek_blocks_block_init' ), 9999 );
+		add_action( 'enqueue_block_assets', array( $this, 'carkeek_blocks_enqueue_global_assets' ), 9999 );
 	}
 
 	/**
@@ -60,7 +61,6 @@ class CarkeekBlocksCL_Block_Register {
 	 * @see https://developer.wordpress.org/reference/functions/register_block_type/
 	 */
 	public function create_block_carkeek_blocks_block_init() {
-		error_log("registering block");
 		$dir = plugin_dir_path( dirname( __FILE__ ) );
 
 		/** Dynamic Blocks */
@@ -71,8 +71,22 @@ class CarkeekBlocksCL_Block_Register {
 			)
 		);
 
-		error_log(print_r($block, true));
+	}
 
+	/** Register Accordion Script for Custom Links */
+	public function carkeek_blocks_enqueue_global_assets() {
+		$dir    = plugin_dir_path( dirname( __FILE__ ) );
+		$vendor = 'vendor/';
+		// load shared assets for specific blocks only.
+		if ( has_block( 'carkeek-blocks/custom-link-list' ) ) {
+			wp_enqueue_script(
+				'aria-accordion',
+				plugins_url( $vendor . 'aria.accordion.min.js', dirname( __FILE__ ) ),
+				array( 'jquery' ),
+				filemtime( "$dir/$vendor/aria.accordion.min.js" ),
+				true
+			);
+		}
 	}
 
 }

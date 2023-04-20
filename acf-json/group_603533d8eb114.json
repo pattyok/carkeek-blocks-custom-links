@@ -6,6 +6,7 @@
             "key": "field_60353f306a6a8",
             "label": "",
             "name": "",
+            "aria-label": "",
             "type": "message",
             "instructions": "",
             "required": 0,
@@ -23,6 +24,7 @@
             "key": "field_60353f176a6a7",
             "label": "External Link",
             "name": "cl_external_link",
+            "aria-label": "",
             "type": "url",
             "instructions": "",
             "required": 0,
@@ -39,6 +41,7 @@
             "key": "field_603533e197488",
             "label": "PDF Link",
             "name": "cl_pdf_link",
+            "aria-label": "",
             "type": "file",
             "instructions": "",
             "required": 0,
@@ -58,6 +61,7 @@
             "key": "field_603534275ed32",
             "label": "Page Link",
             "name": "cl_page_link",
+            "aria-label": "",
             "type": "page_link",
             "instructions": "",
             "required": 0,
@@ -77,7 +81,8 @@
             "key": "field_6035341553205",
             "label": "Notes",
             "name": "cl_notes",
-            "type": "text",
+            "aria-label": "",
+            "type": "textarea",
             "instructions": "Optional - add notes that will display in the link lists",
             "required": 0,
             "conditional_logic": 0,
@@ -87,10 +92,10 @@
                 "id": ""
             },
             "default_value": "",
+            "maxlength": "",
+            "rows": "",
             "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "maxlength": ""
+            "new_lines": "br"
         }
     ],
     "location": [
@@ -110,5 +115,6 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1614211699
+    "show_in_rest": 0,
+    "modified": 1681855459
 }
