@@ -266,6 +266,11 @@ class CarkeekBlocksCL_CustomPost {
 			$list_style .= ' is-style-content';
 		}
 
+		$list_item_style = "";
+		if (false == $attributes['showBullets']) {
+			$list_item_style .= " no-bullets";
+		}
+
 		$block_content = '<div class="wp-block-carkeek-custom-link-list' . esc_attr( $list_style ) . '"><div ' . esc_attr( $data_atts['accordion'] ) . '>';
 
 		if ( ! empty( $attributes['headline'] ) ) {
@@ -274,7 +279,7 @@ class CarkeekBlocksCL_CustomPost {
 		}
 
 		if ( ! empty( $links ) ) {
-			$block_content .= '<ul class="ck-custom-list no-bullets">';
+			$block_content .= '<ul class="ck-custom-list ' . esc_attr( $list_item_style ) . '">';
 			foreach ( $links as $link ) {
 				$block_content .= self::make_custom_link( $link, $attributes['makeTitlesCollapsible'] );
 			}
@@ -296,7 +301,7 @@ class CarkeekBlocksCL_CustomPost {
 					$list_style = '';
 
 					$block_content .= '<div class="ck-custom-list-label" ' . esc_attr( $data_atts['header'] ) . '>' . $term->name . '</div>';
-					$block_content .= '<div class="ck-custom-list" ' . esc_attr( $data_atts['panel'] ) . '><ul class="no-bullets">';
+					$block_content .= '<div class="ck-custom-list" ' . esc_attr( $data_atts['panel'] ) . '><ul class="' . esc_attr( $list_item_style ) . '">';
 					foreach ( $sub_links as $sub ) {
 						$block_content .= self::make_custom_link( $sub, $attributes['makeTitlesCollapsible'] );
 					}

@@ -16,6 +16,7 @@
     ],
 	"textdomain": "carkeek-blocks",
 	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css",
 	  "attributes": {
 		  "sortBy": {
@@ -38,6 +39,10 @@
 			  "type": "boolean",
 			  "default": false
 		  },
+		  "showBullets": {
+			"type": "boolean",
+			"default": false
+		},
 		  "listSelected": {
 			  "type": "string"
 		  },

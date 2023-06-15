@@ -4,6 +4,10 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-.wp-block-create-block-example-dynamic {
-	border: 1px dotted #f00;
+ .wp-block-carkeek-blocks-custom-link-list {
+    border: 1px solid #ccc;
+    padding: 1rem;
+}
+.server-side-render .notes {
+    font-size: 10px;
 }

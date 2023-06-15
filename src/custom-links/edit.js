@@ -31,7 +31,8 @@ function CustomListArchiveEdit( props ) {
         order,
         makeCollapsible,
         makeTitlesCollapsible,
-        primaryContent
+        primaryContent,
+		showBullets
     } = attributes;
     const headlineStyle = 'h' + headlineLevel;
 
@@ -99,6 +100,13 @@ function CustomListArchiveEdit( props ) {
                     }
                     min={2}
                     max={6}
+                />
+				<ToggleControl
+                    label={__("Display items in a bulleted list", "carkeek-blocks")}
+                    checked={showBullets}
+                    onChange={value =>
+                        setAttributes({ showBullets: value })
+                    }
                 />
                 <RadioControl
                 label={__("Primary Content")}
@@ -173,14 +181,7 @@ function CustomListArchiveEdit( props ) {
                 <div className="server-side-render__overlay"></div>
             <ServerSideRender
                 block={name}
-                attributes={{
-                    sortBy: sortBy,
-                    listSelected: listSelected,
-                    headline: headline,
-                    order: order,
-                    makeCollapsible: makeCollapsible,
-                    headlineLevel: headlineLevel,
-                }}
+                attributes={attributes}
             />
             <div className="notes">List preview. To edit the content visit Custom Links in the admin dashboard.</div>
             </div>
