@@ -44,6 +44,10 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 == Changelog ==
+= 1.0.03 =
+* Fix for multisite support
+
+
 = 1.0.02 =
 * Bulleted List option
 Added Option to display as a bulleted list

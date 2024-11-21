@@ -152,7 +152,6 @@ class CarkeekBlocksCL_CustomPost {
 
 		// append path
 		$paths[] = plugin_dir_path( __DIR__ ) . 'acf-json';
-		error_log(print_r($paths, true));
 		// return
 		return $paths;
 
