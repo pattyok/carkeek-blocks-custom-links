@@ -65,6 +65,14 @@
     "primaryContent": {
       "type": "string",
       "default": "links"
+    },
+    "useWithFilter": {
+      "type": "string",
+      "default": ""
+    },
+    "className": {
+      "type": "string",
+      "default": ""
     }
   }
 }

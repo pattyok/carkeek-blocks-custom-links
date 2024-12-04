@@ -12,7 +12,7 @@ import {
     SelectControl,
     __experimentalText as Text
 } from "@wordpress/components";
-import { InspectorControls, RichText, useBlockProps } from "@wordpress/block-editor";
+import { InspectorControls, RichText, useBlockProps, InspectorAdvancedControls } from "@wordpress/block-editor";
 import ServerSideRender from "@wordpress/server-side-render";
 
 function CustomListArchiveEdit( props ) {
@@ -32,7 +32,8 @@ function CustomListArchiveEdit( props ) {
         makeCollapsible,
         makeTitlesCollapsible,
         primaryContent,
-		showBullets
+		showBullets,
+		useWithFilter
     } = attributes;
     const headlineStyle = 'h' + headlineLevel;
 
@@ -42,6 +43,8 @@ function CustomListArchiveEdit( props ) {
             value: type.id,
             label: type.name
         }));
+		const anyList = { value: '0', label: 'Show All'};
+		options.unshift(anyList);
     }
     if (!listSelected) {
         const selectAnItem = { value: null, label: 'Select a List'};
@@ -58,6 +61,7 @@ function CustomListArchiveEdit( props ) {
         </>
     );
     const inspectorControls = (
+		<>
         <InspectorControls>
             <PanelBody title={__("List Settings Settings", "carkeek-blocks")}>
                 {listSelect}
@@ -141,6 +145,20 @@ function CustomListArchiveEdit( props ) {
                 />
             </PanelBody>
         </InspectorControls>
+		<InspectorAdvancedControls>
+			<RadioControl
+			label={__("Use with Filter")}
+			selected={useWithFilter}
+			options={[
+				{ label: 'None', value: '' },
+				{ label: 'FacetWP', value: 'facetwp' },
+			]}
+			onChange={value =>
+				setAttributes({ useWithFilter: value })
+			}
+			/>
+		</InspectorAdvancedControls>
+		</>
     );
 
     const blockProps = useBlockProps();
