@@ -181,6 +181,7 @@ class CarkeekBlocksCL_CustomPost {
 
 		$href  = get_field( 'cl_external_link', $link->ID );
 		$notes = get_field( 'cl_notes', $link->ID );
+		$notes = apply_filters( 'ck_custom_link_notes', $notes, $link );
 		if ( ! empty( $href ) ) {
 			$link_type = 'external';
 		} else {
@@ -205,6 +206,7 @@ class CarkeekBlocksCL_CustomPost {
 				$item .= '<div class="ck-custom-list-notes">' . $notes . '</div>';
 			}
 		}
+		$item = apply_filters( 'ck_custom_link_item', $item, $link );
 		return '<li>' . $item . '</li>';
 
 	}
@@ -216,7 +218,7 @@ class CarkeekBlocksCL_CustomPost {
 	 */
 	public static function carkeek_blocks_render_custom_linklist( $attributes ) {
 		if ( empty( $attributes['listSelected'] ) ) {
-			return;
+			$attributes['listSelected'] = 0;
 		}
 		$args      = array(
 			'numberposts' => -1,
@@ -225,25 +227,36 @@ class CarkeekBlocksCL_CustomPost {
 			'post_status' => 'publish',
 			'orderby'     => $attributes['sortBy'],
 		);
+		/** Customize query to work with Filtering Tools
+		 * Currently works with facetwp, value is 'facetwp', syntax for args is facetwp = true;
+		 * Also working with the Carkeek block filter
+		*/
+
+		if ( !empty( $attributes['useWithFilter'])) {
+			$args[$attributes['useWithFilter']] = true;
+		}
+
 		$post_args = $args;
-
+		$subcats   = array();
 		// first get all posts with no sub cat selected.
-
-		$subcats           = get_term_children( $attributes['listSelected'], 'link_list' );
-		$args['tax_query'] = array(
-			'relation' => 'AND',
-			array(
-				'taxonomy' => 'link_list',
-				'field'    => 'term_id',
-				'terms'    => explode( ',', $attributes['listSelected'] ),
-			),
-			array(
-				'taxonomy' => 'link_list',
-				'field'    => 'term_id',
-				'terms'    => $subcats,
-				'operator' => 'NOT IN',
-			),
-		);
+		// if no list selected, get all otherwise get the selected list
+		if ( $attributes['listSelected'] !== 0 ) {
+			$subcats           = get_term_children( $attributes['listSelected'], 'link_list' );
+			$args['tax_query'] = array(
+				'relation' => 'AND',
+				array(
+					'taxonomy' => 'link_list',
+					'field'    => 'term_id',
+					'terms'    => explode( ',', $attributes['listSelected'] ),
+				),
+				array(
+					'taxonomy' => 'link_list',
+					'field'    => 'term_id',
+					'terms'    => $subcats,
+					'operator' => 'NOT IN',
+				),
+			);
+		}
 
 		$links      = get_posts( $args );
 		$list_style = '';
@@ -269,21 +282,25 @@ class CarkeekBlocksCL_CustomPost {
 		if (false == $attributes['showBullets']) {
 			$list_item_style .= " no-bullets";
 		}
-
-		$block_content = '<div class="wp-block-carkeek-custom-link-list' . esc_attr( $list_style ) . '"><div ' . esc_attr( $data_atts['accordion'] ) . '>';
+		$block_content = '<div ' . get_block_wrapper_attributes( array( 'class' => $list_style ) ) . '"><div ' . esc_attr( $data_atts['accordion'] ) . '>';
 
 		if ( ! empty( $attributes['headline'] ) ) {
 			$tag_name       = 'h' . $attributes['headlineLevel'];
 			$block_content .= '<' . $tag_name . ' class="ck-custom-headline">' . $attributes['headline'] . '</' . $tag_name . '>';
 		}
 
+
+		$block_content .= '<ul class="ck-custom-list ' . esc_attr( $list_item_style ) . '">';
 		if ( ! empty( $links ) ) {
-			$block_content .= '<ul class="ck-custom-list ' . esc_attr( $list_item_style ) . '">';
 			foreach ( $links as $link ) {
 				$block_content .= self::make_custom_link( $link, $attributes['makeTitlesCollapsible'] );
 			}
-			$block_content .= '</ul>';
+		} else {
+			$no_link_message = apply_filters( 'ck_custom_link_no_links_message', __( 'No links found', 'carkeek-blocks' ), $attributes );
+			$block_content .= '<li>' . $no_link_message . '</li>';
 		}
+		$block_content .= '</ul>';
+
 
 		if ( ! empty( $subcats ) ) {
 			foreach ( $subcats as $cat ) {
