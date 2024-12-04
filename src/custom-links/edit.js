@@ -10,7 +10,8 @@ import {
     Spinner,
     Placeholder,
     SelectControl,
-    __experimentalText as Text
+    __experimentalText as Text,
+	TextareaControl
 } from "@wordpress/components";
 import { InspectorControls, RichText, useBlockProps, InspectorAdvancedControls } from "@wordpress/block-editor";
 import ServerSideRender from "@wordpress/server-side-render";
@@ -33,7 +34,8 @@ function CustomListArchiveEdit( props ) {
         makeTitlesCollapsible,
         primaryContent,
 		showBullets,
-		useWithFilter
+		useWithFilter,
+		noLinkMessage
     } = attributes;
     const headlineStyle = 'h' + headlineLevel;
 
@@ -146,6 +148,15 @@ function CustomListArchiveEdit( props ) {
             </PanelBody>
         </InspectorControls>
 		<InspectorAdvancedControls>
+			<TextareaControl
+				label={__("No Results Message")}
+				value={noLinkMessage}
+				help="Message to display when no results are found. Primarily used with FacetWP filters."
+				onChange={value =>
+					setAttributes({ noLinkMessage: value })
+				}
+			>
+			</TextareaControl>
 			<RadioControl
 			label={__("Use with Filter")}
 			selected={useWithFilter}

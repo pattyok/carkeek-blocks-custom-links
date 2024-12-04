@@ -70,6 +70,10 @@
       "type": "string",
       "default": ""
     },
+    "noLinkMessage": {
+      "type": "string",
+      "default": ""
+    },
     "className": {
       "type": "string",
       "default": ""

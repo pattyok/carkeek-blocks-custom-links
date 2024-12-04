@@ -296,8 +296,9 @@ class CarkeekBlocksCL_CustomPost {
 				$block_content .= self::make_custom_link( $link, $attributes['makeTitlesCollapsible'] );
 			}
 		} else {
-			$no_link_message = apply_filters( 'ck_custom_link_no_links_message', __( 'No links found', 'carkeek-blocks' ), $attributes );
-			$block_content .= '<li>' . $no_link_message . '</li>';
+			if (!empty($attributes['noLinkMessage'])) {
+				$block_content .= '<li>' . $attributes['noLinkMessage'] . '</li>';
+			}
 		}
 		$block_content .= '</ul>';
 

@@ -44,6 +44,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 == Changelog ==
+= 1.0.05 =
+* Fix to no links message logic
+
 = 1.0.04 =
 * Add option to show all links in one view
 * Added ability to filter links to add classes and what not.
