@@ -1,0 +1,19 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-carkeek-blocks-custom-link-dropdown {
+	&.is-selected {
+		& .cll-dropdown-links {
+			& > ul {
+				display: block;
+			}
+		}
+	}
+	&.is-content-justification-center {
+		justify-content: center;
+	}
+
+}

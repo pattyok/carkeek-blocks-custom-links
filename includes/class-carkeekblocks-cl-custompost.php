@@ -171,6 +171,30 @@ class CarkeekBlocksCL_CustomPost {
 		return $panel;
 	}
 
+	/** get the link out of the link list item */
+	public static function get_link_list_item( $link ) {
+		$link_item = array(
+			'type' => '',
+			'href' => '',
+			'notes' => get_field( 'cl_notes', $link->ID ),
+		);
+		$href  = get_field( 'cl_external_link', $link->ID );
+		if ( ! empty( $href ) ) {
+			$link_item['type'] = 'external';
+			$link_item['href'] = $href;
+		} else {
+			$href = get_field( 'cl_pdf_link', $link->ID );
+			if ( ! empty( $href ) ) {
+				$link_item['type'] = 'pdf';
+				$link_item['href'] = $href;
+			} else {
+				$link_item['href'] = get_field( 'cl_page_link', $link->ID );
+				$link_item['type'] = 'page';
+			}
+		}
+		return $link_item;
+	}
+
 	/**
 	 * Buildt the custom link
 	 *
@@ -178,25 +202,14 @@ class CarkeekBlocksCL_CustomPost {
 	 * @param boolean $collapse_title whether the title is collapsible.
 	 */
 	public static function make_custom_link( $link, $collapse_title = false ) {
+		$link_item = self::get_link_list_item( $link );
+		$notes = apply_filters( 'ck_custom_link_notes', $link_item['notes'], $link );
 
-		$href  = get_field( 'cl_external_link', $link->ID );
-		$notes = get_field( 'cl_notes', $link->ID );
-		$notes = apply_filters( 'ck_custom_link_notes', $notes, $link );
-		if ( ! empty( $href ) ) {
-			$link_type = 'external';
-		} else {
-			$href = get_field( 'cl_pdf_link', $link->ID );
-			if ( ! empty( $href ) ) {
-				$link_type = 'pdf';
-			} else {
-				$href      = get_field( 'cl_page_link', $link->ID );
-				$link_type = 'page';
-			}
-		}
-		$target = ( 'external' === $link_type || 'pdf' === $link_type ) ? 'target="_blank"' : '';
-		if ( empty( $href ) && true == $collapse_title ) {
+		$target = ( 'external' === $link_item['type'] || 'pdf' === $link_item['type'] ) ? 'target="_blank"' : '';
+		if ( empty( $link_item['href'] ) && true == $collapse_title ) {
 			$item = self::make_accordion_panel( $link->post_title, $notes );
 		} else {
+			$href = $link_item['href'];
 			if ( empty( $href ) ) {
 				$item = '<div class="ck-custom-list-title">' . $link->post_title . '</div>';
 			} else {
@@ -207,7 +220,7 @@ class CarkeekBlocksCL_CustomPost {
 			}
 		}
 		$item = apply_filters( 'ck_custom_link_item', $item, $link );
-		return '<li>' . $item . '</li>';
+		return $item;
 
 	}
 
@@ -293,7 +306,7 @@ class CarkeekBlocksCL_CustomPost {
 		$block_content .= '<ul class="ck-custom-list ' . esc_attr( $list_item_style ) . '">';
 		if ( ! empty( $links ) ) {
 			foreach ( $links as $link ) {
-				$block_content .= self::make_custom_link( $link, $attributes['makeTitlesCollapsible'] );
+				$block_content .= '<li>' . self::make_custom_link( $link, $attributes['makeTitlesCollapsible'] ) . '</li>';
 			}
 		} else {
 			if (!empty($attributes['noLinkMessage'])) {
@@ -320,7 +333,7 @@ class CarkeekBlocksCL_CustomPost {
 					$block_content .= '<div class="ck-custom-list-label" ' . esc_attr( $data_atts['header'] ) . '>' . $term->name . '</div>';
 					$block_content .= '<div class="ck-custom-list" ' . esc_attr( $data_atts['panel'] ) . '><ul class="' . esc_attr( $list_item_style ) . '">';
 					foreach ( $sub_links as $sub ) {
-						$block_content .= self::make_custom_link( $sub, $attributes['makeTitlesCollapsible'] );
+						$block_content .= '<li>' . self::make_custom_link( $sub, $attributes['makeTitlesCollapsible'] ) . '</li>';
 					}
 					$block_content .= '</ul></div>';
 				}

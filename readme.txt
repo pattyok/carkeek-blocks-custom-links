@@ -44,6 +44,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 == Changelog ==
+= 1.0.15 =
+* Added dropdown link block
+
 = 1.0.05 =
 * Fix to no links message logic
 

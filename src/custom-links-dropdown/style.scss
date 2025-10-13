@@ -1,0 +1,102 @@
+.wp-block-carkeek-blocks-custom-link-dropdown {
+	--cll-links-highlight-color: #034575;
+	&.is-content-justification-center {
+		& .cll-dropdown-links {
+			& > ul {
+				left: 50%;
+				transform: translateX(-50%);
+			}
+		}
+	}
+	&.is-content-justification-right {
+		& .cll-dropdown-links {
+			& > ul {
+				right: 0;
+			}
+		}
+	}
+	& .cll-link-description {
+		font-weight: 400;
+	}
+}
+
+
+.cll-dropdown-links {
+  margin: 0;
+}
+
+.cll-dropdown-links button {
+  margin: 0;
+  display: inline-block;
+  position: relative;
+  background-color: transparent;
+  border: 1px solid #BEBEBE;
+  color: #7d7d7d;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.cll-dropdown-links [role="menu"] {
+  margin: 0;
+  padding: 7px 4px;
+  list-style: none;
+  display: none;
+  position: absolute;
+  border: 2px solid #BEBEBE;
+  background-color: #eee;
+  z-index: 1;
+  height: 400px;
+  overflow: auto;
+}
+
+.cll-dropdown-links [role="menuitem"],
+.cll-dropdown-links [role="separator"] {
+  margin: 0;
+  padding: 6px;
+  display: block;
+  width: 90vw;
+  max-width: 500px;
+  background-color: #eee;
+  border: none;
+  color: black;
+  border-radius: 5px;
+}
+
+.cll-dropdown-links [role="separator"] {
+  padding-top: 3px;
+  background-position: center;
+  background-repeat: repeat-x;
+}
+
+.cll-dropdown-links button svg.cll-button-icon {
+  padding-left: 0.125em;
+  fill: currentcolor;
+  stroke: currentcolor;
+}
+
+.cll-dropdown-links button[aria-expanded="true"] svg.cll-button-icon{
+  transform: rotate(180deg);
+}
+
+/* focus styling */
+
+.cll-dropdown-links button:hover,
+.cll-dropdown-links button:focus,
+.cll-dropdown-links button[aria-expanded="true"] {
+
+  background: #eee;
+  color: #7d7d7d;
+
+}
+
+.cll-dropdown-links button[aria-expanded="true"] {
+  border-bottom: none;
+}
+
+.cll-dropdown-links [role="menuitem"]:focus {
+  background: var(--cll-links-highlight-color);
+  color: #fff;
+  outline: none;
+  text-decoration: none;
+  margin: 0;
+}

@@ -71,6 +71,8 @@ class CarkeekBlocksCL_Block_Register {
 			)
 		);
 
+		register_block_type( "$dir/build/custom-links-dropdown" );
+
 	}
 
 	/** Register Accordion Script for Custom Links */

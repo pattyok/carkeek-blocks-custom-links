@@ -1,0 +1,57 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "carkeek-blocks/custom-link-dropdown",
+	"version": "0.1.0",
+	"title": "Custom Link Dropdown",
+	"category": "widgets",
+	"icon": "smiley",
+	"description": "Display a list of links in a dropdown list.",
+	"supports": {
+	  "html": false,
+	  "anchor": true,
+	  "layout": {
+		"default": {
+		  "type": "flex",
+		  "flexWrap": "nowrap"
+		},
+		"allowJustification": true,
+		"allowOrientation": false,
+		"allowVerticalAlignment": false,
+		"allowFlexWrap": false
+	  }
+	},
+	"keywords": [
+       "link", "list", "accordion"
+    ],
+	"textdomain": "carkeek-blocks",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php",
+	"style": "file:./style-index.css",
+	  "attributes": {
+		"sortBy": {
+			  "type": "string",
+			  "default": "title"
+		},
+		  "order": {
+			  "type": "string",
+			  "default": "ASC"
+		},
+		  "listSelected": {
+			  "type": "string"
+		},
+		"dropdownLabel": {
+			"type": "string",
+			"default": "Select an option"
+		},
+		"showDescription": {
+			"type": "boolean",
+			"default": false
+		},
+		"layout": {
+			"type": "object"
+		}
+	  }
+  }
