@@ -5,7 +5,7 @@
  * Replace them with your own styles or remove the file completely.
  */
 
- .wp-block-carkeek-custom-link-list {
+ .wp-block-carkeek-blocks-custom-link-list {
 
 	& ul.no-bullets {
 		list-style: none;
@@ -21,8 +21,8 @@
 		}
 	}
 
-	& .ck-custom-list-label {
-		font-weight: 900;
+	& .ck-custom-sublist-label-bold {
+		font-weight: bold;
 	}
 
 	& .ck-custom-list {
@@ -130,6 +130,8 @@
 		box-shadow: none;
 		display: flex;
 		justify-content: flex-start;
+		align-items: center;
+		gap: 0.5em;
 
 		&::after {
 			content: "";
@@ -140,12 +142,13 @@
 		}
 
 		&::before {
-			font-family: var(--ck-icon-font-family);
-			content: var(--ck-accordion-expand);
-			margin-right: 5px;
-			transition: transform 0.2s ease-in-out;
-			transform-origin: center center;
-			transform: rotate(0deg);
+			content: "";
+			display: inline-block;
+			height: 0.9em;
+			width: 0.9em;
+			background-image: url(plus-sharp-solid.svg);
+			background-size: contain;
+			background-repeat: no-repeat;
 		}
 	}
 
@@ -173,7 +176,7 @@
 	}
 
 	& .accordion__trigger[aria-expanded="true"]::before {
-		content: var(--ck-accordion-collapse);
+		background-image: url(minus-sharp-solid.svg);
 	}
 
 	/**
@@ -245,5 +248,7 @@
 		background: var(--ck-color-accordion-header-expanded-bg);
 		color: var(--ck-color-accordion-header-expanded-text);
 	}
+
+
 
 }

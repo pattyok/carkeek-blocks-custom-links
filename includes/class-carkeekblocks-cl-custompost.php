@@ -329,8 +329,30 @@ class CarkeekBlocksCL_CustomPost {
 				$sub_links              = get_posts( $post_args );
 				if ( ! empty( $sub_links ) ) {
 					$list_style = '';
+					if ( isset ( $attributes['sublabelStyle'] ) && ! empty( $attributes['sublabelStyle'] ) ) {
+						switch ( $attributes['sublabelStyle'] ) {
+							case 'h2':
+							case 'h3':
+							case 'h4':
+							case 'h5':
+							case 'h6':
+								$label_el    = $attributes['sublabelStyle'];
+								$label_class = 'ck-custom-headline ck-custom-sublist-label';
+								break;
+							case 'bold':
+								$label_el    = 'div';
+								$label_class = 'ck-custom-list-label ck-custom-sublist-label-bold';
+								break;
+							default:
+								$label_el    = 'div';
+								$label_class = 'ck-custom-list-label';
+						}
 
-					$block_content .= '<div class="ck-custom-list-label" ' . esc_attr( $data_atts['header'] ) . '>' . $term->name . '</div>';
+					} else {
+						$label_el = 'div';
+						$label_class = 'ck-custom-list-label';
+					}
+					$block_content .= '<' . $label_el . ' class="' . esc_attr( $label_class ) . '" ' . esc_attr( $data_atts['header'] ) . '>' . $term->name . '</' . $label_el . '>';
 					$block_content .= '<div class="ck-custom-list" ' . esc_attr( $data_atts['panel'] ) . '><ul class="' . esc_attr( $list_item_style ) . '">';
 					foreach ( $sub_links as $sub ) {
 						$block_content .= '<li>' . self::make_custom_link( $sub, $attributes['makeTitlesCollapsible'] ) . '</li>';

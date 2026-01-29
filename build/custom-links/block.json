@@ -77,6 +77,10 @@
     "className": {
       "type": "string",
       "default": ""
+    },
+    "sublabelStyle": {
+      "type": "string",
+      "default": "bold"
     }
   }
 }

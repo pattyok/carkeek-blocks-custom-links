@@ -35,7 +35,8 @@ function CustomListArchiveEdit( props ) {
         primaryContent,
 		showBullets,
 		useWithFilter,
-		noLinkMessage
+		noLinkMessage,
+		sublabelStyle,
     } = attributes;
     const headlineStyle = 'h' + headlineLevel;
 
@@ -99,7 +100,7 @@ function CustomListArchiveEdit( props ) {
             <PanelBody title={__("Layout", "carkeek-blocks")}>
 
                 <RangeControl
-                    label={__("Heading Size", "carkeek-blocks")}
+                    label={__("Main Heading Size", "carkeek-blocks")}
                     value={headlineLevel}
                     onChange={value =>
                         setAttributes({ headlineLevel: value })
@@ -107,6 +108,24 @@ function CustomListArchiveEdit( props ) {
                     min={2}
                     max={6}
                 />
+				<SelectControl
+                        label={__("Subheading Style", "carkeek-blocks")}
+                        onChange={value =>
+                            setAttributes({
+                                sublabelStyle: value
+                            })
+                        }
+                        options={[
+                            { label: __("Default"), value: ""},
+                            { label: __("Bold"), value: "bold"},
+							{ label: __("H2"), value: "h2"},
+							{ label: __("H3"), value: "h3"},
+							{ label: __("H4"), value: "h4"},
+							{ label: __("H5"), value: "h5"},
+							{ label: __("H6"), value: "h6"},
+                        ]}
+                        value={sublabelStyle}
+                    />
 				<ToggleControl
                     label={__("Display items in a bulleted list", "carkeek-blocks")}
                     checked={showBullets}
