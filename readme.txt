@@ -44,6 +44,13 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 == Changelog ==
+= 1.0.18 =
+* Some style fixes for compatibility
+
+= 1.0.17 =
+* Added column option to the lists
+* Fixed the list layouts
+
 = 1.0.16 =
 * Changed the accordion +/- to use svg
 * Added option to style subheads

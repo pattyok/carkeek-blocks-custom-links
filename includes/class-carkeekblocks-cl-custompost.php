@@ -292,10 +292,20 @@ class CarkeekBlocksCL_CustomPost {
 		}
 
 		$list_item_style = "";
+		$main_list_item_style = "";
 		if (false == $attributes['showBullets']) {
 			$list_item_style .= " no-bullets";
 		}
-		$block_content = '<div ' . get_block_wrapper_attributes( array( 'class' => $list_style ) ) . '"><div ' . esc_attr( $data_atts['accordion'] ) . '>';
+		$main_list_item_style = $list_item_style;
+		if ( !empty( $subcats)) {
+			$main_list_item_style .= " has-subcats";
+		}
+
+		if ( isset( $attributes['columns'] ) && $attributes['columns'] > 1 ) {
+			$main_list_item_style .= ' ck-list-columns ck-list-columns-' . intval( $attributes['columns'] );
+		}
+
+		$block_content = '<div ' . get_block_wrapper_attributes( array( 'class' => $list_style ) ) . '">';
 
 		if ( ! empty( $attributes['headline'] ) ) {
 			$tag_name       = 'h' . $attributes['headlineLevel'];
@@ -303,7 +313,7 @@ class CarkeekBlocksCL_CustomPost {
 		}
 
 
-		$block_content .= '<ul class="ck-custom-list ' . esc_attr( $list_item_style ) . '">';
+		$block_content .= '<ul class="ck-custom-list ' . esc_attr( $main_list_item_style ) . '">';
 		if ( ! empty( $links ) ) {
 			foreach ( $links as $link ) {
 				$block_content .= '<li>' . self::make_custom_link( $link, $attributes['makeTitlesCollapsible'] ) . '</li>';
@@ -313,7 +323,7 @@ class CarkeekBlocksCL_CustomPost {
 				$block_content .= '<li>' . $attributes['noLinkMessage'] . '</li>';
 			}
 		}
-		$block_content .= '</ul>';
+
 
 
 		if ( ! empty( $subcats ) ) {
@@ -352,17 +362,18 @@ class CarkeekBlocksCL_CustomPost {
 						$label_el = 'div';
 						$label_class = 'ck-custom-list-label';
 					}
-					$block_content .= '<' . $label_el . ' class="' . esc_attr( $label_class ) . '" ' . esc_attr( $data_atts['header'] ) . '>' . $term->name . '</' . $label_el . '>';
+					$block_content .= '<li ' . esc_attr( $data_atts['accordion'] ) . '><' . $label_el . ' class="' . esc_attr( $label_class ) . '" ' . esc_attr( $data_atts['header'] ) . '>' . $term->name . '</' . $label_el . '>';
 					$block_content .= '<div class="ck-custom-list" ' . esc_attr( $data_atts['panel'] ) . '><ul class="' . esc_attr( $list_item_style ) . '">';
 					foreach ( $sub_links as $sub ) {
 						$block_content .= '<li>' . self::make_custom_link( $sub, $attributes['makeTitlesCollapsible'] ) . '</li>';
 					}
-					$block_content .= '</ul></div>';
+					$block_content .= '</ul></div></li>';
 				}
 			}
 		}
+		$block_content .= '</ul>';
 
-		$block_content .= '</div></div>';
+		$block_content .= '</div>';
 		return $block_content;
 
 	}

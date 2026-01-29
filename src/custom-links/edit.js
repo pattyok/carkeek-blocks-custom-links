@@ -37,6 +37,7 @@ function CustomListArchiveEdit( props ) {
 		useWithFilter,
 		noLinkMessage,
 		sublabelStyle,
+		columns,
     } = attributes;
     const headlineStyle = 'h' + headlineLevel;
 
@@ -164,6 +165,22 @@ function CustomListArchiveEdit( props ) {
                         setAttributes({ makeTitlesCollapsible: value })
                     }
                 />
+				<SelectControl
+					label={__("Columns", "carkeek-blocks")}
+					help={__("Display the list in multiple columns (Desktop only).", "carkeek-blocks")}
+					onChange={value =>
+						setAttributes({
+							columns: parseInt(value)
+						})
+					}
+					options={[
+						{ label: __("Default"), value: 1},
+						{ label: __("2 Columns"), value: 2},
+						{ label: __("3 Columns"), value: 3},
+						{ label: __("4 Columns"), value: 4}
+					]}
+					value={columns}
+				/>
             </PanelBody>
         </InspectorControls>
 		<InspectorAdvancedControls>

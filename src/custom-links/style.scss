@@ -6,26 +6,18 @@
  */
 
  .wp-block-carkeek-blocks-custom-link-list {
-
+	& ul.has-subcats,
 	& ul.no-bullets {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
 
-	& a {
-		text-decoration: none;
-
-		&:hover {
-			text-decoration: underline;
-		}
-	}
-
 	& .ck-custom-sublist-label-bold {
 		font-weight: bold;
 	}
 
-	& .ck-custom-list {
+	& .ck-custom-list[aria-hidden="false"] {
 		margin-bottom: 1rem;
 	}
 
@@ -63,6 +55,27 @@
 		}
 
 	}
+}
+
+@media (min-width: 768px) {
+	.wp-block-carkeek-blocks-custom-link-list {
+		& ul.ck-list-columns {
+			column-gap: 2rem;
+			&.ck-list-columns-2 {
+				column-count: 2;
+			}
+			&.ck-list-columns-3 {
+				column-count: 3;
+			}
+			&.ck-list-columns-4 {
+				column-count: 4;
+			}
+			& li {
+				break-inside: avoid;
+			}
+		}
+	}
+
 }
 
 .carkeek-blocks-accordion.mini,
@@ -130,8 +143,8 @@
 		box-shadow: none;
 		display: flex;
 		justify-content: flex-start;
-		align-items: center;
-		gap: 0.5em;
+		align-items: flex-start;
+		gap: 0.25em;
 
 		&::after {
 			content: "";
@@ -144,11 +157,13 @@
 		&::before {
 			content: "";
 			display: inline-block;
-			height: 0.9em;
-			width: 0.9em;
-			background-image: url(plus-sharp-solid.svg);
-			background-size: contain;
-			background-repeat: no-repeat;
+			height: 1em;
+			width: 1em;
+			background-color: currentColor;
+			mask-position: center;
+			mask-image: url(plus-sharp-solid.svg);
+			mask-size: 0.8em 0.8em;
+			mask-repeat: no-repeat;
 		}
 	}
 
@@ -176,7 +191,7 @@
 	}
 
 	& .accordion__trigger[aria-expanded="true"]::before {
-		background-image: url(minus-sharp-solid.svg);
+		mask-image: url(minus-sharp-solid.svg);
 	}
 
 	/**

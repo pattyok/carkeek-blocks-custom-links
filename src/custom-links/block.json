@@ -79,6 +79,10 @@
 		  "sublabelStyle": {
             "type": "string",
             "default": "bold"
+        },
+		  "columns": {
+            "type": "number",
+            "default": 1
         }
 	  }
   }
