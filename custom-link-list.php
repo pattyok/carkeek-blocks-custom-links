@@ -8,7 +8,7 @@
  * Primary Branch: main
  * Description: A custom post type and a block for creating and managing lists of links.
  * Author: Patty O'Hara
- * Version: 1.0.18
+ * Version: 1.0.19
  * Author URI https://carkeekstudios.com/
  * Text Domain: carkeek-blocks
  */
