@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Load assets for our blocks.
  *
@@ -19,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class CarkeekBlocksCL_CustomPost {
+
 
 
 	/**
@@ -143,25 +145,25 @@ class CarkeekBlocksCL_CustomPost {
 			'show_in_rest'      => true,
 		);
 		register_taxonomy( 'link_list', array( 'custom_link' ), $args );
-
 	}
 
 
-	/** load our acf-json for the custom links */
+	/**
+	 * load our acf-json for the custom links
+	 */
 	function json_load_point( $paths ) {
 
 		// append path
 		$paths[] = plugin_dir_path( __DIR__ ) . 'acf-json';
 		// return
 		return $paths;
-
 	}
 
 
 	/**
 	 * Make accordion panel
 	 *
-	 * @param string $header header content for the panel.
+	 * @param string $header  header content for the panel.
 	 * @param string $content main content for the panel.
 	 */
 	public static function make_accordion_panel( $header, $content ) {
@@ -171,14 +173,16 @@ class CarkeekBlocksCL_CustomPost {
 		return $panel;
 	}
 
-	/** get the link out of the link list item */
+	/**
+	 * get the link out of the link list item
+	 */
 	public static function get_link_list_item( $link ) {
 		$link_item = array(
-			'type' => '',
-			'href' => '',
+			'type'  => '',
+			'href'  => '',
 			'notes' => get_field( 'cl_notes', $link->ID ),
 		);
-		$href  = get_field( 'cl_external_link', $link->ID );
+		$href      = get_field( 'cl_external_link', $link->ID );
 		if ( ! empty( $href ) ) {
 			$link_item['type'] = 'external';
 			$link_item['href'] = $href;
@@ -198,12 +202,12 @@ class CarkeekBlocksCL_CustomPost {
 	/**
 	 * Buildt the custom link
 	 *
-	 * @param object  $link link post type object.
+	 * @param object  $link           link post type object.
 	 * @param boolean $collapse_title whether the title is collapsible.
 	 */
 	public static function make_custom_link( $link, $collapse_title = false ) {
 		$link_item = self::get_link_list_item( $link );
-		$notes = apply_filters( 'ck_custom_link_notes', $link_item['notes'], $link );
+		$notes     = apply_filters( 'ck_custom_link_notes', $link_item['notes'], $link );
 
 		$target = ( 'external' === $link_item['type'] || 'pdf' === $link_item['type'] ) ? 'target="_blank"' : '';
 		if ( empty( $link_item['href'] ) && true == $collapse_title ) {
@@ -221,7 +225,142 @@ class CarkeekBlocksCL_CustomPost {
 		}
 		$item = apply_filters( 'ck_custom_link_item', $item, $link );
 		return $item;
+	}
 
+	/**
+	 * Build sub category label settings.
+	 *
+	 * @param array $attributes Block attributes.
+	 * @return array
+	 */
+	private static function get_subcategory_label_settings( $attributes ) {
+		$label_el    = 'div';
+		$label_class = 'ck-custom-list-label';
+
+		if ( isset( $attributes['sublabelStyle'] ) && ! empty( $attributes['sublabelStyle'] ) ) {
+			switch ( $attributes['sublabelStyle'] ) {
+				case 'h2':
+				case 'h3':
+				case 'h4':
+				case 'h5':
+				case 'h6':
+					$label_el    = $attributes['sublabelStyle'];
+					$label_class = 'ck-custom-headline ck-custom-sublist-label';
+					break;
+				case 'bold':
+					$label_el    = 'div';
+					$label_class = 'ck-custom-list-label ck-custom-sublist-label-bold';
+					break;
+			}
+		}
+
+		return array(
+			'label_el'    => $label_el,
+			'label_class' => $label_class,
+		);
+	}
+
+	/**
+	 * Get descendant term IDs for a term.
+	 *
+	 * @param int $term_id Term ID.
+	 * @return array
+	 */
+	private static function get_descendant_term_ids( $term_id ) {
+		$children = get_term_children( absint( $term_id ), 'link_list' );
+
+		if ( is_wp_error( $children ) || empty( $children ) ) {
+			return array();
+		}
+
+		return array_map( 'absint', $children );
+	}
+
+	/**
+	 * Get links assigned directly to a term.
+	 *
+	 * @param int   $term_id               Term ID.
+	 * @param array $post_args             Base post query args.
+	 * @param array $exclude_descendant_ids Descendant term IDs to exclude.
+	 * @return array
+	 */
+	private static function get_term_links( $term_id, $post_args, $exclude_descendant_ids = array() ) {
+		$post_args['tax_query'] = array(
+			'relation' => 'AND',
+			array(
+				'taxonomy'         => 'link_list',
+				'field'            => 'term_id',
+				'terms'            => array( absint( $term_id ) ),
+				'include_children' => false,
+			),
+		);
+
+		if ( ! empty( $exclude_descendant_ids ) ) {
+			$post_args['tax_query'][] = array(
+				'taxonomy' => 'link_list',
+				'field'    => 'term_id',
+				'terms'    => $exclude_descendant_ids,
+				'operator' => 'NOT IN',
+			);
+		}
+
+		return get_posts( $post_args );
+	}
+
+	/**
+	 * Recursively render a term and its child terms.
+	 *
+	 * @param WP_Term $term            Term object.
+	 * @param array   $attributes      Block attributes.
+	 * @param array   $post_args       Base post query args.
+	 * @param string  $list_item_style List item style classes.
+	 * @param array   $data_atts       Accordion data attributes.
+	 * @return string
+	 */
+	private static function render_term_hierarchy( $term, $attributes, $post_args, $list_item_style, $data_atts ) {
+		if ( ! $term || is_wp_error( $term ) ) {
+			return '';
+		}
+
+		$descendant_ids = self::get_descendant_term_ids( $term->term_id );
+		$links          = self::get_term_links( $term->term_id, $post_args, $descendant_ids );
+
+		$children_terms = get_terms(
+			array(
+				'taxonomy'   => 'link_list',
+				'hide_empty' => false,
+				'parent'     => $term->term_id,
+			)
+		);
+
+		$children_html = '';
+		if ( ! is_wp_error( $children_terms ) && ! empty( $children_terms ) ) {
+			foreach ( $children_terms as $child_term ) {
+				$children_html .= self::render_term_hierarchy( $child_term, $attributes, $post_args, $list_item_style, $data_atts );
+			}
+		}
+
+		if ( empty( $links ) && empty( $children_html ) ) {
+			return '';
+		}
+
+		$label_settings = self::get_subcategory_label_settings( $attributes );
+		$label_el       = $label_settings['label_el'];
+		$label_class    = $label_settings['label_class'];
+
+		$content  = '<li ' . esc_attr( $data_atts['accordion'] ) . '><' . $label_el . ' class="' . esc_attr( $label_class ) . '" ' . esc_attr( $data_atts['header'] ) . '>' . esc_html( $term->name ) . '</' . $label_el . '>';
+		$content .= '<div class="ck-custom-list" ' . esc_attr( $data_atts['panel'] ) . '><ul class="' . esc_attr( $list_item_style ) . '">';
+
+		if ( ! empty( $links ) ) {
+			foreach ( $links as $sub ) {
+				$content .= '<li>' . self::make_custom_link( $sub, $attributes['makeTitlesCollapsible'] ) . '</li>';
+			}
+		}
+
+		$content .= $children_html;
+		$content .= '</ul></div></li>';
+
+		return $content;
 	}
 
 	/**
@@ -233,42 +372,55 @@ class CarkeekBlocksCL_CustomPost {
 		if ( empty( $attributes['listSelected'] ) ) {
 			$attributes['listSelected'] = 0;
 		}
-		$args      = array(
+		$args = array(
 			'numberposts' => -1,
 			'post_type'   => 'custom_link',
 			'order'       => $attributes['order'],
 			'post_status' => 'publish',
 			'orderby'     => $attributes['sortBy'],
 		);
-		/** Customize query to work with Filtering Tools
+		/**
+		 * Customize query to work with Filtering Tools
 		 * Currently works with facetwp, value is 'facetwp', syntax for args is facetwp = true;
 		 * Also working with the Carkeek block filter
-		*/
+		 */
 
-		if ( !empty( $attributes['useWithFilter'])) {
-			$args[$attributes['useWithFilter']] = true;
+		if ( ! empty( $attributes['useWithFilter'] ) ) {
+			$args[ $attributes['useWithFilter'] ] = true;
 		}
 
 		$post_args = $args;
 		$subcats   = array();
 		// first get all posts with no sub cat selected.
-		// if no list selected, get all otherwise get the selected list
-		if ( $attributes['listSelected'] !== 0 ) {
-			$subcats           = get_term_children( $attributes['listSelected'], 'link_list' );
+		// If no list selected, get all otherwise get the selected list.
+		$selected_list_id = absint( $attributes['listSelected'] );
+		if ( 0 !== $selected_list_id ) {
+			$subcats           = get_terms(
+				array(
+					'taxonomy'   => 'link_list',
+					'hide_empty' => false,
+					'parent'     => $selected_list_id,
+				)
+			);
 			$args['tax_query'] = array(
 				'relation' => 'AND',
 				array(
-					'taxonomy' => 'link_list',
-					'field'    => 'term_id',
-					'terms'    => explode( ',', $attributes['listSelected'] ),
-				),
-				array(
-					'taxonomy' => 'link_list',
-					'field'    => 'term_id',
-					'terms'    => $subcats,
-					'operator' => 'NOT IN',
+					'taxonomy'         => 'link_list',
+					'field'            => 'term_id',
+					'terms'            => array( $selected_list_id ),
+					'include_children' => false,
 				),
 			);
+
+			$descendant_ids = self::get_descendant_term_ids( $selected_list_id );
+			if ( ! empty( $descendant_ids ) ) {
+				$args['tax_query'][] = array(
+					'taxonomy' => 'link_list',
+					'field'    => 'term_id',
+					'terms'    => $descendant_ids,
+					'operator' => 'NOT IN',
+				);
+			}
 		}
 
 		$links      = get_posts( $args );
@@ -291,14 +443,14 @@ class CarkeekBlocksCL_CustomPost {
 			$list_style .= ' is-style-content';
 		}
 
-		$list_item_style = "";
-		$main_list_item_style = "";
-		if (false == $attributes['showBullets']) {
-			$list_item_style .= " no-bullets";
+		$list_item_style      = '';
+		$main_list_item_style = '';
+		if ( false == $attributes['showBullets'] ) {
+			$list_item_style .= ' no-bullets';
 		}
 		$main_list_item_style = $list_item_style;
-		if ( !empty( $subcats)) {
-			$main_list_item_style .= " has-subcats";
+		if ( ! empty( $subcats ) ) {
+			$main_list_item_style .= ' has-subcats';
 		}
 
 		if ( isset( $attributes['columns'] ) && $attributes['columns'] > 1 ) {
@@ -312,76 +464,25 @@ class CarkeekBlocksCL_CustomPost {
 			$block_content .= '<' . $tag_name . ' class="ck-custom-headline">' . $attributes['headline'] . '</' . $tag_name . '>';
 		}
 
-
 		$block_content .= '<ul class="ck-custom-list ' . esc_attr( $main_list_item_style ) . '">';
 		if ( ! empty( $links ) ) {
 			foreach ( $links as $link ) {
 				$block_content .= '<li>' . self::make_custom_link( $link, $attributes['makeTitlesCollapsible'] ) . '</li>';
 			}
-		} else {
-			if (!empty($attributes['noLinkMessage'])) {
+		} elseif ( ! empty( $attributes['noLinkMessage'] ) ) {
 				$block_content .= '<li>' . $attributes['noLinkMessage'] . '</li>';
-			}
 		}
 
-
-
-		if ( ! empty( $subcats ) ) {
-			foreach ( $subcats as $cat ) {
-				$term                   = get_term( $cat, 'link_list' );
-				$post_args['tax_query'] = array(
-					array(
-						'taxonomy' => 'link_list',
-						'field'    => 'term_id',
-						'terms'    => explode( ',', $cat ),
-					),
-				);
-				$sub_links              = get_posts( $post_args );
-				if ( ! empty( $sub_links ) ) {
-					$list_style = '';
-					if ( isset ( $attributes['sublabelStyle'] ) && ! empty( $attributes['sublabelStyle'] ) ) {
-						switch ( $attributes['sublabelStyle'] ) {
-							case 'h2':
-							case 'h3':
-							case 'h4':
-							case 'h5':
-							case 'h6':
-								$label_el    = $attributes['sublabelStyle'];
-								$label_class = 'ck-custom-headline ck-custom-sublist-label';
-								break;
-							case 'bold':
-								$label_el    = 'div';
-								$label_class = 'ck-custom-list-label ck-custom-sublist-label-bold';
-								break;
-							default:
-								$label_el    = 'div';
-								$label_class = 'ck-custom-list-label';
-						}
-
-					} else {
-						$label_el = 'div';
-						$label_class = 'ck-custom-list-label';
-					}
-					$block_content .= '<li ' . esc_attr( $data_atts['accordion'] ) . '><' . $label_el . ' class="' . esc_attr( $label_class ) . '" ' . esc_attr( $data_atts['header'] ) . '>' . $term->name . '</' . $label_el . '>';
-					$block_content .= '<div class="ck-custom-list" ' . esc_attr( $data_atts['panel'] ) . '><ul class="' . esc_attr( $list_item_style ) . '">';
-					foreach ( $sub_links as $sub ) {
-						$block_content .= '<li>' . self::make_custom_link( $sub, $attributes['makeTitlesCollapsible'] ) . '</li>';
-					}
-					$block_content .= '</ul></div></li>';
-				}
+		if ( ! empty( $subcats ) && ! is_wp_error( $subcats ) ) {
+			foreach ( $subcats as $child_term ) {
+				$block_content .= self::render_term_hierarchy( $child_term, $attributes, $post_args, $list_item_style, $data_atts );
 			}
 		}
 		$block_content .= '</ul>';
 
 		$block_content .= '</div>';
 		return $block_content;
-
 	}
-
-
-
 }
 
 CarkeekBlocksCL_CustomPost::register();
-
-
