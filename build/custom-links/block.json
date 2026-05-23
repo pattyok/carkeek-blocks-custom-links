@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "carkeek-blocks/custom-link-list",
-  "version": "0.1.0",
+  "version": "0.1.01",
   "title": "Custom Link List",
   "category": "widgets",
   "icon": "smiley",
@@ -19,6 +19,7 @@
   "textdomain": "carkeek-blocks",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
+  "viewScript": "file:./view.js",
   "style": "file:./style-index.css",
   "attributes": {
     "sortBy": {
@@ -85,6 +86,10 @@
     "columns": {
       "type": "number",
       "default": 1
+    },
+    "openFirst": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

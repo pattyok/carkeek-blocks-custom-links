@@ -38,6 +38,7 @@ function CustomListArchiveEdit( props ) {
 		noLinkMessage,
 		sublabelStyle,
 		columns,
+		openFirst
     } = attributes;
     const headlineStyle = 'h' + headlineLevel;
 
@@ -155,6 +156,13 @@ function CustomListArchiveEdit( props ) {
                     checked={makeCollapsible}
                     onChange={value =>
                         setAttributes({ makeCollapsible: value })
+                    }
+                />
+				<ToggleControl
+                    label={__("Open First Item by Default", "carkeek-blocks")}
+                    checked={openFirst}
+                    onChange={value =>
+                        setAttributes({ openFirst: value })
                     }
                 />
                 <ToggleControl

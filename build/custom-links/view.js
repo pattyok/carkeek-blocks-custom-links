@@ -1,0 +1,1 @@
+document.querySelectorAll(".carkeek-blocks-accordion.open-first-item").forEach((function(e){const r=e.querySelector(".accordion__trigger"),t=e.querySelector(".accordion__panel");t&&t.setAttribute("aria-hidden","false"),r&&r.setAttribute("aria-expanded","true")}));

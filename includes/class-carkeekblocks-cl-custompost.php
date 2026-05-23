@@ -204,8 +204,9 @@ class CarkeekBlocksCL_CustomPost {
 	 *
 	 * @param object  $link           link post type object.
 	 * @param boolean $collapse_title whether the title is collapsible.
+	 * @param string  $open           whether the item is open by default.
 	 */
-	public static function make_custom_link( $link, $collapse_title = false ) {
+	public static function make_custom_link( $link, $collapse_title = false) {
 		$link_item = self::get_link_list_item( $link );
 		$notes     = apply_filters( 'ck_custom_link_notes', $link_item['notes'], $link );
 
@@ -443,6 +444,10 @@ class CarkeekBlocksCL_CustomPost {
 			$list_style .= ' is-style-content';
 		}
 
+		if ( true == $attributes['openFirst'] ) {
+			$list_style .= ' open-first-item';
+		}
+
 		$list_item_style      = '';
 		$main_list_item_style = '';
 		if ( false == $attributes['showBullets'] ) {
@@ -467,7 +472,7 @@ class CarkeekBlocksCL_CustomPost {
 		$block_content .= '<ul class="ck-custom-list ' . esc_attr( $main_list_item_style ) . '">';
 		if ( ! empty( $links ) ) {
 			foreach ( $links as $link ) {
-				$block_content .= '<li>' . self::make_custom_link( $link, $attributes['makeTitlesCollapsible'] ) . '</li>';
+				$block_content .= '<li>' . self::make_custom_link( $link, $attributes['makeTitlesCollapsible'], $open ) . '</li>';
 			}
 		} elseif ( ! empty( $attributes['noLinkMessage'] ) ) {
 				$block_content .= '<li>' . $attributes['noLinkMessage'] . '</li>';
